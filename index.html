@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Permanent+Marker&family=Special+Elite&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
         tailwind.config = {
@@ -142,7 +142,7 @@
 
             <div class="flex items-center gap-4">
                 <button onclick="toggleAudioPreview()" id="synthBtn" class="btn-volt px-4 py-2 text-xs uppercase rounded flex items-center gap-2">
-                    <i id="synthIcon" class="fa-solid fa-play"></i> <span id="synthText">LISTEN DEMO</span>
+                    <i id="synthIcon" class="fa-solid fa-play"></i> <span id="synthText">LATEST SINGLE</span>
                 </button>
                 <button id="mobileMenuBtn" class="md:hidden text-voltcream text-2xl focus:outline-none">
                     <i class="fa-solid fa-bars"></i>
@@ -191,9 +191,6 @@
                 </p>
 
                 <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <button onclick="openPresaveModal()" class="btn-volt px-8 py-3 rounded text-lg uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-heart"></i> Pre-Save Single
-                    </button>
                     <a href="#cult" class="border-2 border-voltcream text-voltcream hover:bg-voltcream hover:text-voltdark font-punk px-6 py-3 rounded text-lg uppercase transition-all shadow-md">
                         <i class="fa-solid fa-bolt"></i> Join Psycho Cult
                     </a>
@@ -304,13 +301,6 @@
     </footer>
 
     <script>
-        function openPresaveModal() {
-            const email = prompt("Enter your email to Pre-Save 'Taken Medication' on Spotify/Apple Music:");
-            if (email) {
-                alert(`⚡ "TAKEN MEDICATION" Pre-saved! We sent confirmation to ${email}.`);
-            }
-        }
-
         function handleNewsletterSubmit(e) {
             e.preventDefault();
             const form = e.target;
@@ -343,32 +333,40 @@
             document.getElementById('newsletterSuccess').classList.remove('hidden');
         }
 
-        // Audio Player for TakenMedication.mp3
+        // Audio Player Setup
         const demoAudio = new Audio('./assets/TakenMedication.mp3');
 
+        demoAudio.addEventListener('play', () => {
+            const icon = document.getElementById('synthIcon');
+            if (icon) {
+                icon.className = 'fa-solid fa-pause';
+            }
+        });
+
+        demoAudio.addEventListener('pause', () => {
+            const icon = document.getElementById('synthIcon');
+            if (icon) {
+                icon.className = 'fa-solid fa-play';
+            }
+        });
+
         demoAudio.addEventListener('ended', () => {
-            resetDemoBtn();
+            demoAudio.currentTime = 0;
+            const icon = document.getElementById('synthIcon');
+            if (icon) {
+                icon.className = 'fa-solid fa-play';
+            }
         });
 
         function toggleAudioPreview() {
             if (demoAudio.paused) {
-                demoAudio.play().then(() => {
-                    document.getElementById('synthIcon').className = 'fa-solid fa-square';
-                    document.getElementById('synthText').innerText = 'STOP DEMO';
-                }).catch(err => {
+                demoAudio.play().catch(err => {
                     console.error("Audio playback error:", err);
-                    alert("Could not play TakenMedication.mp3. Ensure the file exists at './assets/TakenMedication.mp3' (or update the file path in the script).");
+                    alert("Could not play TakenMedication.mp3. Ensure the file exists at './assets/TakenMedication.mp3'.");
                 });
             } else {
                 demoAudio.pause();
-                demoAudio.currentTime = 0;
-                resetDemoBtn();
             }
-        }
-
-        function resetDemoBtn() {
-            document.getElementById('synthIcon').className = 'fa-solid fa-play';
-            document.getElementById('synthText').innerText = 'LISTEN DEMO';
         }
 
         // Mobile Nav Toggle
